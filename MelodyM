@@ -1,0 +1,60 @@
+## Assignment 2: Write the following functions:
+##  1. makeCacheMatrix: This function creates a special "matrix" object 
+##that can cache its inverse.
+##  2. cacheSolve: This function computes the inverse of the special "matrix" 
+##returned by makeCacheMatrix above. If the inverse has already been 
+##calculated (and the matrix has not changed), then cacheSolve 
+##should retrieve the inverse from the cache.
+
+##if not already downloaded, install.packages("matlib") library(matlib)
+
+
+##first create a function makeCacheMatrix that caches the 
+##inverse of the matrix input
+##let variable m represent the inverse matrix instead of the mean 
+makeCacheMatrix <- function(x = matrix()) {
+ m<-NULL
+ set<-function(new_matrix) {
+   x<<-new_matrix
+   m<<-NULL
+ }
+ get<-function() x
+ setInverse<-function(x) m<<-solve(x)
+ getInverse<-function() m
+ list(set=set, get=get, 
+      setInverse=setInverse, 
+      getInverse=getInverse)
+}
+## Function that takes the input of the 
+##new matrix we set as x and returns the 
+##inverse matrix using the function solve()
+
+cacheSolve <- function(x, ...) {
+  m <- x$getInverse()
+  if(!is.null(m)) {
+    message("getting cached data")
+    return(m)
+  }
+  data<- x$get()
+  m<-solve(data, ...)
+  x$setInverse(m)
+  m
+}
+  ## Return a matrix that is the inverse of 'x'
+
+
+
+##Example of test run 
+
+#  > B<-matrix(runif(9,-1,1), nrow=3)
+#  > B
+#          [,1]         [,2]        [,3]
+# [1,]  0.8990691 -0.008173637  0.19935557
+# [2,] -0.8744408 -0.037053576 -0.19704916
+# [3,] -0.1066960  0.967076920  0.03655385
+#  > A<-makeCacheMatrix(B)
+#  > cacheSolve(A)
+#          [,1]       [,2]        [,3]
+# [1,]   622.8402   635.6248   29.618161
+# [2,]   174.4298   178.2034    9.336176
+# [3,] -2796.7648 -2859.2830 -133.191473
